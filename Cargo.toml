@@ -2,8 +2,11 @@
 name = "tantivy-czech-stemmer"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Testuj.to s.r.o. <technology@testuj.to>", "Patrik Šimunič"]
+description = "Czech stemmer provided as Tantivy tokenizer"
+repository = "https://github.com/testuj-to/tantivy-czech-stemmer"
+license = "BSD-3-Clause"
+license-file = "LICENSE"
 
 [dependencies]
 serde = "1.0.199"
