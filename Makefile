@@ -1,7 +1,8 @@
 
-.PHONY: default algorithm
+.PHONY: default algorithms
 
 default:
 
-algorithm:
-	snowball ./algorithms/dolamic.sbl -rust -o ./src/snowball/algorithms/dolamic
+algorithms:
+	snowball ./algorithms/dolamic_aggressive.sbl -rust -o ./src/snowball/algorithms/dolamic_aggressive
+	snowball ./algorithms/dolamic_light.sbl -rust -o ./src/snowball/algorithms/dolamic_light

@@ -9,14 +9,16 @@ use super::snowball;
 #[derive(Debug, Serialize, Deserialize, Eq, PartialEq, Copy, Clone)]
 #[allow(missing_docs)]
 pub enum Algorithm {
-    Dolamic,
+    DolamicAggressive,
+    DolamicLight,
 }
 
 impl Algorithm {
     fn snowball_algorithm(self) -> snowball::Algorithm {
         use self::Algorithm::*;
         match self {
-            Dolamic => snowball::Algorithm::Dolamic,
+            DolamicAggressive => snowball::Algorithm::DolamicAggressive,
+            DolamicLight => snowball::Algorithm::DolamicLight,
         }
     }
 }
@@ -38,9 +40,9 @@ impl Stemmer {
 }
 
 impl Default for Stemmer {
-    /// Creates a new `Stemmer` [`TokenFilter`] for [`Algorithm::Dolamic`].
+    /// Creates a new `Stemmer` [`TokenFilter`] for [`Algorithm::DolamicAggressive`].
     fn default() -> Self {
-        Stemmer::new(Algorithm::Dolamic)
+        Stemmer::new(Algorithm::DolamicAggressive)
     }
 }
 
