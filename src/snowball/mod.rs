@@ -8,7 +8,8 @@ pub mod algorithms;
 
 #[derive(Debug, Serialize, Deserialize, Eq, PartialEq, Copy, Clone)]
 pub enum Algorithm {
-    Dolamic,
+    DolamicAggressive,
+    DolamicLight,
 }
 
 /// Wrapps a usable interface around the actual stemmer implementation
@@ -20,7 +21,8 @@ impl Stemmer {
     /// Create a new stemmer from an algorithm
     pub fn create(lang: Algorithm) -> Self {
         match lang {
-            Algorithm::Dolamic => Stemmer { stemmer: algorithms::dolamic::stem },
+            Algorithm::DolamicAggressive => Stemmer { stemmer: algorithms::dolamic_aggressive::stem },
+            Algorithm::DolamicLight => Stemmer { stemmer: algorithms::dolamic_light::stem },
         }
     }
 
