@@ -16,6 +16,7 @@ pub enum Algorithm {
 impl Algorithm {
     fn snowball_algorithm(self) -> snowball::Algorithm {
         use self::Algorithm::*;
+
         match self {
             DolamicAggressive => snowball::Algorithm::DolamicAggressive,
             DolamicLight => snowball::Algorithm::DolamicLight,
@@ -67,19 +68,18 @@ impl<T: Tokenizer> Tokenizer for StemmerFilter<T> {
     type TokenStream<'a> = StemmerTokenStream<T::TokenStream<'a>>;
 
     fn token_stream<'a>(&'a mut self, text: &'a str) -> Self::TokenStream<'a> {
-        let stemmer = snowball::Stemmer::create(self.stemmer_algorithm);
         StemmerTokenStream {
             tail: self.inner.token_stream(text),
-            stemmer,
             buffer: String::new(),
+            stemmer: snowball::Stemmer::create(self.stemmer_algorithm),
         }
     }
 }
 
 pub struct StemmerTokenStream<T> {
     tail: T,
-    stemmer: snowball::Stemmer,
     buffer: String,
+    stemmer: snowball::Stemmer,
 }
 
 impl<T: TokenStream> TokenStream for StemmerTokenStream<T> {
@@ -87,9 +87,10 @@ impl<T: TokenStream> TokenStream for StemmerTokenStream<T> {
         if !self.tail.advance() {
             return false;
         }
+
         let token = self.tail.token_mut();
-        let stemmed_str = self.stemmer.stem(&token.text);
-        match stemmed_str {
+
+        match self.stemmer.stem(&token.text) {
             Cow::Owned(stemmed_str) => token.text = stemmed_str,
             Cow::Borrowed(stemmed_str) => {
                 self.buffer.clear();
@@ -97,6 +98,7 @@ impl<T: TokenStream> TokenStream for StemmerTokenStream<T> {
                 mem::swap(&mut token.text, &mut self.buffer);
             }
         }
+
         true
     }
 
