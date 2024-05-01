@@ -110,3 +110,25 @@ impl<T: TokenStream> TokenStream for StemmerTokenStream<T> {
         self.tail.token_mut()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use tantivy::tokenizer::{LowerCaser, SimpleTokenizer, TextAnalyzer};
+    use tantivy_tokenizer_api::TokenFilter;
+
+    #[test]
+    fn register() {
+        let schema_builder = tantivy::schema::Schema::builder();
+
+        let schema = schema_builder.build();
+        let index = tantivy::Index::create_in_ram(schema.clone());
+
+        let text_analyzer = TextAnalyzer::builder(
+            super::Stemmer::default().transform(
+                LowerCaser.transform(SimpleTokenizer::default()),
+            ),
+        ).build();
+
+        index.tokenizers().register("lang_cs", text_analyzer);
+    }
+}
