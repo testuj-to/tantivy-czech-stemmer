@@ -19,8 +19,9 @@ This repository bundles several OSS projects into 1 library:
 ## Usage
 
 ```rs
-use tantivy::schema::{Schema, TextFieldIndexing, TextOptions, IndexRecordOption};
 use tantivy::Index;
+use tantivy::schema::{Schema, TextFieldIndexing, TextOptions, IndexRecordOption};
+use tantivy::tokenizer::{LowerCaser, SimpleTokenizer, TextAnalyzer};
 use tantivy_czech_stemmer;
 
 fn main() {
@@ -51,7 +52,16 @@ fn main() {
     //     tantivy_czech_stemmer::tokenizer::Algorithm::DolamicLight,
     // );
 
+    // Before we register it, we need to wrap in an instance
+    // of the TextAnalyzer tokenizer. We also have to transform
+    // the text to lowercase since our stemmer expects lowercase.
+    let czech_tokenizer = TextAnalyzer::builder(
+        stemmer_tokenizer.transform(
+            LowerCaser.transform(SimpleTokenizer::default())
+        ),
+    ).build();
+
     // Register the tokenizer with Tantivy
-    index.tokenizers().register("lang_cs", stemmer_tokenizer);
+    index.tokenizers().register("lang_cs", czech_tokenizer);
 }
 ```
